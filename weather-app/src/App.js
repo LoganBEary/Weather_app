@@ -2,9 +2,6 @@ import "./App.css";
 import BasePage from "./Components/BasePage/base";
 import Login from "./Components/Login/login";
 import { useState } from "react";
-import { useQuery, useMutation } from "react-query";
-import { ReactQueryDevTools } from "react-query/devtools";
-import axios from "axios";
 
 function App() {
   const [login, setLogin] = useState(false)
