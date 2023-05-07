@@ -1,5 +1,24 @@
 {
     "cSpell.words": [
         "errorcode"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none",
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "127.0.0.1",
+            "port": 13306,
+            "driver": "MySQL",
+            "name": "Weather_DB",
+            "database": "weather_info",
+            "username": "logan",
+            "password": "Admin12345"
+        }
     ]
 }
