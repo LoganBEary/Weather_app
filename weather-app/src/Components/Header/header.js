@@ -1,15 +1,11 @@
-import './header.css'
+import "./header.css";
 
 function Header() {
-return (
-    <div className = "login-page">
-        <div className="container">
-            <div className="login-header">
-                Weather App!
-            </div>
-        </div>
+  return (
+    <div className="header-container">
+      <div className="header">Weather App!</div>
     </div>
-)
+  );
 }
 
-export default Header
+export default Header;

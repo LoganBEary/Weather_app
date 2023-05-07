@@ -1,8 +1,6 @@
 
-
 function BasePage() {
-
-    <div>
+    <div className="Base-Container App-background">
         Test
     </div>
 }

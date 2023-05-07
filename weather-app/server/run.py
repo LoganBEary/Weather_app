@@ -7,4 +7,4 @@ def home():
     return 'Hello, World!'  # Return this message back to the browser
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
-    app.run()  # Start the server
+    app.run(port=5000)  # Start the server
