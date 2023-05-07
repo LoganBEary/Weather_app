@@ -7,21 +7,7 @@ import { ReactQueryDevTools } from "react-query/devtools";
 import axios from "axios";
 
 function App() {
-  const [login, setLogin] = useState(false);
-
-  async function fetchCredentials() {
-    const { data } = await axios.get(
-      "https://jsonplaceholder.typicode.com/posts"
-    );
-    return data;
-  }
-
-  const { data, error, isError, isLoading } = useQuery(
-    "posts",
-    fetchCredentials
-  );
-
-
+  const [login, setLogin] = useState(false)
 
   if (login === false)
     return (
