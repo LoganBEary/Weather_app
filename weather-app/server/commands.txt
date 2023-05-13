@@ -1,0 +1,5 @@
+Start Server:
+    python -m flask run
+
+Start WebSite:
+    npm start 

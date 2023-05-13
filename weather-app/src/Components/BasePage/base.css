@@ -1,0 +1,24 @@
+.base-container {
+    width: 100vw;
+    height: calc(100vh - 20px);
+}
+
+.base-grid {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-template-columns: .17fr 1fr 1fr; 
+    grid-template-rows: 1fr; 
+    gap: 0px 0px;
+    grid-template-areas:
+    "local-area main-area main-area"; 
+}
+
+.grid-item {
+    border: .1px solid rgba(0, 0, 0, 0.8);
+    font-size: 20px;
+    text-align: center;
+}
+
+.local-area { grid-area: local-area;}
+.main-area { grid-area: main-area;}

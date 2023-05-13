@@ -20,5 +20,8 @@
             "username": "logan",
             "password": "Admin12345"
         }
-    ]
+    ],
+    "files.associations": {
+        "*.css" : "css"
+    },
 }

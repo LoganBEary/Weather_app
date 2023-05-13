@@ -1,25 +1,24 @@
 import "./App.css";
-import BasePage from "./Components/BasePage/base";
+import Header from "./Components/Header/header";
 import Login from "./Components/Login/login";
-import { useState } from "react";
+import { createRef, useEffect} from "react";
 
 function App() {
-  const [login, setLogin] = useState(false)
+    const background = createRef()
 
-  if (login === false)
+    useEffect(() => {
+
+    })
+
+
     return (
       <div className="App">
-        <div className="App-background">
-          <header className="App-header">
-          <Login hasLoggedIn={setLogin} />
-          </header>
+        <div className="App-background" id="app-back" ref={background}>
+          <Header/>
+          <Login backgroundRef={background}/>
         </div>
       </div>
     );
-  return(
-  <>
-  <BasePage/>
-  </>)
 }
 
 export default App;
