@@ -20,7 +20,7 @@ app.secret_key = os.urandom(36)
 cors = CORS(app)  # Setup the flask app by creating an instance of Flask
 
 headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
-
+outcome = None
 @app.route('/')  # When someone goes to / on the server, execute the following function
 @app.route("/index", methods=['POST'])
 def index():
@@ -29,7 +29,6 @@ def index():
 @app.route('/')
 @app.route('/login', methods=['POST','GET'])
 def login():
-    outcome = ""
     try:
         conn = mysql.connector.connect(user='logan', password='Admin12345', host='127.0.0.1',
             database='weather_info', port='13306', auth_plugin="mysql_native_password")
@@ -38,16 +37,21 @@ def login():
             #session['password'] = request.get_json()
             user_a = session['info']['user']
             pass_a = session['info']['password']
-            execute = "SELECT user_email, user_password FROM User_Credentials WHERE " \
-                "user_email='{user_name}' AND user_password='{pass_w}'".format(user_name=user_a, pass_w=pass_a)
+            execute = "SELECT CASE WHEN EXISTS(SELECT user_email, user_password FROM User_Credentials WHERE user_email='{user_name}' AND user_password='{pass_w}') THEN TRUE ELSE FALSE END".format(user_name=user_a, pass_w=pass_a)
             data = db_execute(conn, execute)
-            if data is True:
-                outcome = "Can log in!"
+            # see if true
+            # print("in Post", data)
+            global outcome
+            if(data == 1):
+                outcome = True
+                print("outcome: ", outcome)
             else:
-                outcome = "Bad Login"
+
+                outcome = False
+                print("outcome: ", outcome)
+            # Need to send back to redirect for create acc page
         conn.close()
-        print(outcome)
-        return outcome
+        return jsonify(outcome)
 
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -58,40 +62,56 @@ def login():
             print(err)
 
     return "OUT"
-    
+
+
+#TODO Get Backend to throttle
+
+@app.route('/')
+@app.route('/processZip', methods=['POST','GET'])
+def processZip():
+    session['info'] = request.get_json()
+    zipcode = session['info']['location']
+    #print(zipcode)
+    weather_data = find_weather(zipcode)
+    return "Processed"
+
+
 def db_execute(db_con, exc):
     "Only getting User/Pass"
     getData = exc
     # perform vetting of str for SQL injections
     cursor = db_con.cursor()
     cursor.execute(getData)
-    db_data = cursor.fetchone()
+    db_data = cursor.fetchone()[0]
     # TODO add logic if email exists but pass wrong
-    print(db_data)
-    if db_data is None:
-        return jsonify(False)
-    elif db_data[0] is not None:
-        return jsonify(True)
-    else:
-        return jsonify(False)
+    return db_data
 
 def find_weather(city_name):
     city_name = city_name.replace(" ", "+")
+    print(city_name)
     try:
-        res = requests.get(
-            f'https://www.google.com/search?q={city_name}&oq={city_name}&aqs=chrome.0.35i39l2j0l4j46j69i60.6128j1j7&sourceid=chrome&ie=UTF-8', headers=headers)
+        url = "https://www.google.com/search?q=" + "weather" + city_name
+        html = requests.get(url).content
         print("Loading...")
-
-        soup = BeautifulSoup(res.text, 'html.parser')
-        location = soup.select('#wob_loc')[0].getText().strip()
-        time = soup.select('#wob_dts')[0].getText().strip()
-        info = soup.select('#wob_dc')[0].getText().strip()
-        temperature = soup.select('#wob_tm')[0].getText().strip()
-
-        print("Location: " + location)
-        print("Temperature: " + temperature + "&deg;C")
-        print("Time: " + time)
-        print("Weather Description: " + info)
+        soup = BeautifulSoup(html, 'html.parser')
+        temperature = soup.find(
+            'div', attrs={'class': 'BNeawe iBp4i AP7Wnd'}).text
+        time_sky = soup.find(
+            'div', attrs={'class': 'BNeawe tAd8D AP7Wnd'}).text
+  
+        #Precip, Humid, Wind Attributes
+        weather_img = soup.find(
+            'div', attrs={'class': 'UQT4rd'})
+        print(weather_img)
+        #precipitation = soup.find('span', attrs={'class':'wob_pp'}).text
+        #print(precipitation)
+        #humidity = soup.find('span', attrs={'class':'wob_hm'}).text
+        #wind = soup.find('span', attrs={'class':'wob_t'}).text
+        # formatting data
+        sky = time_sky.split('\n')[1]
+        print(sky, " + ", temperature)
+        #print(precipitation, "+", humidity, "+", wind)
+        #return(sky,temperature)
     except:
         print("Please enter a valid city name")
 
